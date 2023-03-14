@@ -14,10 +14,10 @@ import javax.inject.Inject
 
 class ActivityRepositoryImpl @Inject constructor(
     @Dispatcher(BoredDispatchers.IO) private val ioDispatcher: CoroutineDispatcher,
-    private val network: RetrofitBoredNetwork,
+    private val network: RetrofitBoredNetwork
 ) : ActivityRepository {
-    override suspend fun getActivity(type: ActivityType?): Flow<ActivityResource> =
-        flow {
-            emit(network.getActivity(type?.apiName).asResource())
-        }.flowOn(ioDispatcher)
+
+    override suspend fun getActivity(type: ActivityType?): Flow<ActivityResource> = flow {
+        emit(network.getActivity(type?.apiName).asResource())
+    }.flowOn(ioDispatcher)
 }

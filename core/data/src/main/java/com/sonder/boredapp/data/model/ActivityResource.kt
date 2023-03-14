@@ -7,7 +7,7 @@ import com.sonder.boredapp.network.di.model.ActivityResponse
 fun ActivityResponse.asResource() = ActivityResource(
     activity = activity,
     accessibility = accessibility,
-    type = ActivityType.values().first { it.apiName == activity },
+    type = ActivityType.values().first { it.apiName == type },
     participants = participants,
     price = price,
     key = key

@@ -1,5 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="activity_list_fragment_label">Activities</string>
-    <string name="activity_state_error">Failed to load some activities</string>
+
+    <string name="activity_state_error">failed to load some activities</string>
+
+    <string name="activity_participants">participants: %d</string>
+    <string name="activity_accessibility">accessibility: %.1f</string>
+    <string name="activity_price">price: %.1f</string>
+
+    <string name="activity_type_education">education</string>
+    <string name="activity_type_recreational">recreational</string>
+    <string name="activity_type_social">social</string>
+    <string name="activity_type_diy">diy</string>
+    <string name="activity_type_charity">charity</string>
+    <string name="activity_type_cooking">cooking</string>
+    <string name="activity_type_relaxation">relaxation</string>
+    <string name="activity_type_music">music</string>
+    <string name="activity_type_busywork">busywork</string>
 </resources>
