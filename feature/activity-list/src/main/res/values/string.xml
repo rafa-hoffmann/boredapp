@@ -3,6 +3,10 @@
     <string name="activity_list_fragment_label">Activities</string>
 
     <string name="activity_state_error">failed to load some activities</string>
+    <string name="activity_add">ADD</string>
+
+    <string name="activity_add_state_error">failed to add to your activities</string>
+    <string name="activity_add_state_success">added to your activities</string>
 
     <string name="activity_participants">participants: %d</string>
     <string name="activity_accessibility">accessibility: %.1f</string>

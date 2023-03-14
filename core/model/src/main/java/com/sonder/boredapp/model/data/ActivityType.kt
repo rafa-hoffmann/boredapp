@@ -11,3 +11,5 @@ enum class ActivityType(val apiName: String) {
     MUSIC("music"),
     BUSYWORK("busywork")
 }
+fun String.asActivityResourceType() = ActivityType.values()
+    .first { type -> type.apiName == this }

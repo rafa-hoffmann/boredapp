@@ -1,7 +1,6 @@
 package com.sonder.boredapp.activity_list
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.sonder.boredapp.activity_list.adapter.ActivityListAdapter
 import com.sonder.boredapp.feature.activity_list.R
 import com.sonder.boredapp.feature.activity_list.databinding.FragmentActivityListBinding
+import com.sonder.boredapp.model.data.ActivityResource
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -37,15 +37,21 @@ class ActivityListFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentActivityListBinding.inflate(inflater, container, false)
-        _adapter = ActivityListAdapter(mutableListOf())
+        _adapter = ActivityListAdapter(mutableListOf()) {
+            onItemAdd(it)
+        }
         return binding.root
+    }
+
+    private fun onItemAdd(activity: ActivityResource) {
+        viewModel.addToUserActivities(activity)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         setupRecyclerView()
         setupObservers()
 
-        viewModel.getActivities(times = INITIAL_ACTIVITIES_SIZE)
+        viewModel.getNetworkActivities(times = INITIAL_ACTIVITIES_SIZE)
 
         super.onViewCreated(view, savedInstanceState)
     }
@@ -57,7 +63,7 @@ class ActivityListFragment : Fragment() {
                 super.onScrollStateChanged(recyclerView, newState)
 
                 if (!binding.activityScrollView.canScrollVertically(1) && newState == RecyclerView.SCROLL_STATE_IDLE) {
-                    viewModel.getActivities(times = CONSECUTIVE_ACTIVITIES_SIZE)
+                    viewModel.getNetworkActivities(times = CONSECUTIVE_ACTIVITIES_SIZE)
                 }
             }
         })
@@ -69,13 +75,24 @@ class ActivityListFragment : Fragment() {
             Lifecycle.State.STARTED
         ).onEach {
             when (it) {
-                is ActivityUiState.Success -> {
-                    adapter.items.add(it.activity)
+                is UiState.Success -> {
+                    adapter.items.add(it.value)
                     adapter.notifyItemInserted(adapter.items.lastIndex)
                     updateProgressBar(loading = false)
                 }
-                ActivityUiState.Error -> showErrorToast(getString(R.string.activity_state_error))
-                ActivityUiState.Loading -> updateProgressBar(loading = true)
+                UiState.Error -> showToast(getString(R.string.activity_state_error))
+                UiState.Loading -> updateProgressBar(loading = true)
+            }
+        }.launchIn(viewLifecycleOwner.lifecycleScope)
+
+        viewModel.addUserActivitiesState.flowWithLifecycle(
+            lifecycle,
+            Lifecycle.State.STARTED
+        ).onEach {
+            when (it) {
+                is UiState.Success -> showToast(getString(R.string.activity_add_state_success))
+                UiState.Error -> showToast(getString(R.string.activity_add_state_error))
+                UiState.Loading -> updateProgressBar(loading = true)
             }
         }.launchIn(viewLifecycleOwner.lifecycleScope)
     }
@@ -84,7 +101,7 @@ class ActivityListFragment : Fragment() {
         binding.activityProgressBar.isVisible = loading
     }
 
-    private fun showErrorToast(errorMessage: String) {
-        Toast.makeText(requireContext(), errorMessage, Toast.LENGTH_SHORT).show()
+    private fun showToast(message: String) {
+        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
     }
 }
