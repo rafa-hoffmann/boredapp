@@ -14,8 +14,8 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-const val INITIAL_ACTIVITIES_SIZE = 30
-const val CONSECUTIVE_ACTIVITIES_SIZE = 10
+const val INITIAL_ACTIVITIES_SIZE = 15
+const val CONSECUTIVE_ACTIVITIES_SIZE = 5
 
 @HiltViewModel
 class ActivityListViewModel @Inject constructor(
