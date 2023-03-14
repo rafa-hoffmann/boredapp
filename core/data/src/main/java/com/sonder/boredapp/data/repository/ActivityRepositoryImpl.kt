@@ -14,10 +14,13 @@ import javax.inject.Inject
 
 class ActivityRepositoryImpl @Inject constructor(
     @Dispatcher(BoredDispatchers.IO) private val ioDispatcher: CoroutineDispatcher,
-    private val network: RetrofitBoredNetwork,
+    private val network: RetrofitBoredNetwork
 ) : ActivityRepository {
-    override suspend fun getActivity(type: ActivityType?): Flow<ActivityResource> =
-        flow {
-            emit(network.getActivity(type?.apiName).asResource())
-        }.flowOn(ioDispatcher)
+    private val activityMap: HashMap<String, ActivityResource> = hashMapOf()
+
+    override suspend fun getActivity(type: ActivityType?): Flow<List<ActivityResource>> = flow {
+        val resource = network.getActivity(type?.apiName).asResource()
+        activityMap[resource.key] = resource
+        emit(activityMap.values.toList())
+    }.flowOn(ioDispatcher)
 }

@@ -10,6 +10,8 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.sonder.boredapp.feature.activity_list.R
 import com.sonder.boredapp.activity_list.adapter.ActivityListAdapter
 import com.sonder.boredapp.feature.activity_list.databinding.FragmentActivityListBinding
