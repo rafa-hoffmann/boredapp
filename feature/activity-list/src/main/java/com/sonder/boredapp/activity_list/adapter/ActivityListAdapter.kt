@@ -3,15 +3,15 @@ package com.sonder.boredapp.activity_list.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.ListAdapter
+import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.sonder.boredapp.activity_list.getDisplayText
 import com.sonder.boredapp.feature.activity_list.R
 import com.sonder.boredapp.model.data.ActivityResource
 import com.sonder.boredapp.feature.activity_list.databinding.ItemActivityBinding
 
-class ActivityListAdapter :
-    ListAdapter<ActivityResource, ActivityListAdapter.ActivityViewHolder>(ActivityListAdapter) {
+class ActivityListAdapter(val items: MutableList<ActivityResource>) :
+    RecyclerView.Adapter<ActivityListAdapter.ActivityViewHolder>() {
     inner class ActivityViewHolder(private val binding: ItemActivityBinding) :
         ViewHolder(binding.root) {
 
@@ -39,8 +39,10 @@ class ActivityListAdapter :
         return ActivityViewHolder(itemBinding)
     }
 
+    override fun getItemCount(): Int = items.size
+
     override fun onBindViewHolder(viewHolder: ActivityViewHolder, position: Int) {
-        viewHolder.bind(getItem(position))
+        viewHolder.bind(items[position])
     }
 
     private companion object : DiffUtil.ItemCallback<ActivityResource>() {

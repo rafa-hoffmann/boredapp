@@ -14,7 +14,8 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-private const val API_CALLS_PER_REFRESH = 5
+const val INITIAL_ACTIVITIES_SIZE = 30
+const val CONSECUTIVE_ACTIVITIES_SIZE = 10
 
 @HiltViewModel
 class ActivityListViewModel @Inject constructor(
@@ -25,15 +26,13 @@ class ActivityListViewModel @Inject constructor(
 
     val activityState: StateFlow<ActivityUiState> = _activityState
 
-    fun getActivity(type: ActivityType? = null) {
+    fun getActivities(type: ActivityType? = null, times: Int) {
         viewModelScope.launch {
-            repeat(API_CALLS_PER_REFRESH) {
+            repeat(times) {
                 activityRepository.getActivity(type).asResult().collect { activityResult ->
                     _activityState.update {
                         when (activityResult) {
-                            is Result.Success -> {
-                                ActivityUiState.Success(activityResult.data)
-                            }
+                            is Result.Success -> ActivityUiState.Success(activityResult.data)
                             is Result.Error -> ActivityUiState.Error
                             is Result.Loading -> ActivityUiState.Loading
                         }
@@ -46,6 +45,6 @@ class ActivityListViewModel @Inject constructor(
 
 sealed interface ActivityUiState {
     object Loading : ActivityUiState
-    data class Success(val activities: List<ActivityResource>) : ActivityUiState
+    data class Success(val activity: ActivityResource) : ActivityUiState
     object Error : ActivityUiState
 }

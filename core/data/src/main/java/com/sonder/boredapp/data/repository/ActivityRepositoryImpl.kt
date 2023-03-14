@@ -16,11 +16,8 @@ class ActivityRepositoryImpl @Inject constructor(
     @Dispatcher(BoredDispatchers.IO) private val ioDispatcher: CoroutineDispatcher,
     private val network: RetrofitBoredNetwork
 ) : ActivityRepository {
-    private val activityMap: HashMap<String, ActivityResource> = hashMapOf()
 
-    override suspend fun getActivity(type: ActivityType?): Flow<List<ActivityResource>> = flow {
-        val resource = network.getActivity(type?.apiName).asResource()
-        activityMap[resource.key] = resource
-        emit(activityMap.values.toList())
+    override suspend fun getActivity(type: ActivityType?): Flow<ActivityResource> = flow {
+        emit(network.getActivity(type?.apiName).asResource())
     }.flowOn(ioDispatcher)
 }
