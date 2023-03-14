@@ -24,5 +24,3 @@ class ActivityTypeConverter {
     fun stringToActivityType(serializedName: String): ActivityType =
         serializedName.asActivityResourceType()
 }
-
-

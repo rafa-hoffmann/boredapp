@@ -5,8 +5,8 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.sonder.boredapp.database.dao.ActivityDao
 import com.sonder.boredapp.database.model.ActivityEntity
-import com.sonder.boredapp.database.util.InstantConverter
 import com.sonder.boredapp.database.util.ActivityTypeConverter
+import com.sonder.boredapp.database.util.InstantConverter
 
 @Database(
     entities = [

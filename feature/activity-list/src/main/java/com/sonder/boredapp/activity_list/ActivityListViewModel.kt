@@ -2,8 +2,8 @@ package com.sonder.boredapp.activity_list
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.sonder.boredapp.common.result.asResult
 import com.sonder.boredapp.common.result.Result
+import com.sonder.boredapp.common.result.asResult
 import com.sonder.boredapp.data.repository.ActivityRepository
 import com.sonder.boredapp.model.data.ActivityResource
 import com.sonder.boredapp.model.data.ActivityType

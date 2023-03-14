@@ -1,7 +1,7 @@
 package com.sonder.boredapp.data.repository
 
-import com.sonder.boredapp.common.network.Dispatcher
 import com.sonder.boredapp.common.network.BoredDispatchers
+import com.sonder.boredapp.common.network.Dispatcher
 import com.sonder.boredapp.data.model.asEntity
 import com.sonder.boredapp.data.model.asResource
 import com.sonder.boredapp.database.dao.ActivityDao

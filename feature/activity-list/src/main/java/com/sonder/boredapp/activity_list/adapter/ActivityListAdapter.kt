@@ -7,8 +7,8 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.sonder.boredapp.activity_list.getDisplayText
 import com.sonder.boredapp.feature.activity_list.R
-import com.sonder.boredapp.model.data.ActivityResource
 import com.sonder.boredapp.feature.activity_list.databinding.ItemActivityBinding
+import com.sonder.boredapp.model.data.ActivityResource
 
 class ActivityListAdapter(val items: MutableList<ActivityResource>, private val onItemAdd: (ActivityResource) -> (Unit)) :
     RecyclerView.Adapter<ActivityListAdapter.ActivityViewHolder>() {
