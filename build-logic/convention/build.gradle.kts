@@ -28,6 +28,7 @@ java {
 dependencies {
     compileOnly(libs.android.gradlePlugin)
     compileOnly(libs.kotlin.gradlePlugin)
+    compileOnly(libs.ksp.gradlePlugin)
 }
 
 gradlePlugin {
@@ -59,6 +60,10 @@ gradlePlugin {
         register("androidHilt") {
             id = "boredapp.android.hilt"
             implementationClass = "AndroidHiltConventionPlugin"
+        }
+        register("androidRoom") {
+            id = "boredapp.android.room"
+            implementationClass = "AndroidRoomConventionPlugin"
         }
     }
 }

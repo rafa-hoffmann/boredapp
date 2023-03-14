@@ -1,7 +1,7 @@
 package com.sonder.boredapp.common.network.di
 
-import com.sonder.boredapp.common.network.Dispatcher
 import com.sonder.boredapp.common.network.BoredDispatchers.IO
+import com.sonder.boredapp.common.network.Dispatcher
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

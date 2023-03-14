@@ -7,7 +7,6 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
-import com.sonder.boredapp.R
 import com.sonder.boredapp.databinding.ActivityMainBinding
 import dagger.hilt.android.AndroidEntryPoint
 

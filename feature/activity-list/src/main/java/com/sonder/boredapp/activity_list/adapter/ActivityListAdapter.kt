@@ -7,10 +7,10 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.sonder.boredapp.activity_list.getDisplayText
 import com.sonder.boredapp.feature.activity_list.R
-import com.sonder.boredapp.model.data.ActivityResource
 import com.sonder.boredapp.feature.activity_list.databinding.ItemActivityBinding
+import com.sonder.boredapp.model.data.ActivityResource
 
-class ActivityListAdapter(val items: MutableList<ActivityResource>) :
+class ActivityListAdapter(val items: MutableList<ActivityResource>, private val onItemAdd: (ActivityResource) -> (Unit)) :
     RecyclerView.Adapter<ActivityListAdapter.ActivityViewHolder>() {
     inner class ActivityViewHolder(private val binding: ItemActivityBinding) :
         ViewHolder(binding.root) {
@@ -25,6 +25,10 @@ class ActivityListAdapter(val items: MutableList<ActivityResource>) :
                     root.context.getString(R.string.activity_accessibility, activity.accessibility)
                 activityParticipants.text =
                     root.context.getString(R.string.activity_participants, activity.participants)
+
+                activityAdd.setOnClickListener {
+                    onItemAdd(activity)
+                }
             }
         }
     }

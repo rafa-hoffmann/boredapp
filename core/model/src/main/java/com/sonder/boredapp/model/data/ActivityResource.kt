@@ -6,5 +6,6 @@ data class ActivityResource(
     val type: ActivityType,
     val participants: Int,
     val price: Float,
-    val key: String
+    val key: String,
+    val status: ActivityStatus? = null
 )

@@ -36,6 +36,16 @@
             app:layout_constraintTop_toBottomOf="@id/activity_name"
             tools:text="relaxation" />
 
+        <Button
+            android:id="@+id/activity_add"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="@string/activity_add"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/activity_type" />
+
         <TextView
             android:id="@+id/activity_participants"
             style="@style/TextAppearance.AppCompat.Body1"
@@ -44,7 +54,6 @@
             app:layout_constraintBottom_toTopOf="@id/activity_price"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/activity_name"
-            app:layout_constraintHorizontal_bias="1"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_chainStyle="packed"
             tools:text="participants: 1" />
@@ -66,7 +75,7 @@
             style="@style/TextAppearance.AppCompat.Body1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toBottomOf="@id/activity_type"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="1"
             app:layout_constraintTop_toBottomOf="@id/activity_price"
