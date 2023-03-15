@@ -10,9 +10,11 @@ import com.sonder.boredapp.model.data.ActivityResource
 import com.sonder.boredapp.model.data.ActivityType
 import com.sonder.boredapp.network.di.retrofit.RetrofitBoredNetwork
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class ActivityRepositoryImpl @Inject constructor(
@@ -28,6 +30,8 @@ class ActivityRepositoryImpl @Inject constructor(
         if (!networkActivitySet.contains(activityResource.key)) {
             networkActivitySet.add(activityResource.key)
             emit(network.getActivity(type?.apiName).asResource())
+        } else {
+            throw Exception("Activity already fetched, key ${activityResource.key}")
         }
     }.flowOn(ioDispatcher)
 
@@ -36,10 +40,21 @@ class ActivityRepositoryImpl @Inject constructor(
     }.flowOn(ioDispatcher)
 
     override suspend fun getUserActivities(type: ActivityType?) = flow {
-        emit(activityDao.getUserActivityEntities().asExternalModel())
+        val userActivities = if (type == null) {
+            activityDao.getAllUserActivityEntities()
+        } else {
+            activityDao.getUserActivityEntitiesByType(type)
+        }.asExternalModel()
+        emit(userActivities)
     }.flowOn(ioDispatcher)
 
     override suspend fun updateActivityStatus(activityResource: ActivityResource) = flow {
         emit(activityDao.updateActivity(activityResource.asEntity()))
     }.flowOn(ioDispatcher)
+
+    override suspend fun clearPreviouslyFetchedActivities() {
+        CoroutineScope(ioDispatcher).launch {
+            networkActivitySet.clear()
+        }
+    }
 }

@@ -33,4 +33,5 @@
     <string name="activity_status_completed">completed, time spent: %1$s</string>
 
     <string name="activity_filter">filter</string>
+    <string name="activity_clear_filter">CLEAR</string>
 </resources>

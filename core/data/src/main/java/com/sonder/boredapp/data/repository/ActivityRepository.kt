@@ -7,6 +7,8 @@ import kotlinx.coroutines.flow.Flow
 interface ActivityRepository {
     suspend fun getActivity(type: ActivityType? = null): Flow<ActivityResource>
 
+    suspend fun clearPreviouslyFetchedActivities()
+
     suspend fun addUserActivity(activityResource: ActivityResource): Flow<Unit>
 
     suspend fun getUserActivities(type: ActivityType? = null): Flow<List<ActivityResource>>
