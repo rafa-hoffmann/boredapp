@@ -22,7 +22,7 @@ fun ActivityResource.asEntity() = ActivityEntity(
     price = price,
     key = key,
     status = when (status) {
-        is ActivityStatus.Finished -> ActivityEntity.Type.WITHDRAWAL
+        is ActivityStatus.Finished -> ActivityEntity.Type.FINISHED
         is ActivityStatus.InProgress -> ActivityEntity.Type.IN_PROGRESS
         ActivityStatus.Withdrawal -> ActivityEntity.Type.WITHDRAWAL
         null -> null

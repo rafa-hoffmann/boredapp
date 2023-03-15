@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@id/activityList"
+        android:icon="@drawable/ic_activity"
+        android:title="@string/activity_list_fragment_label" />
+
+    <item
+        android:id="@id/userActivitiesList"
+        android:icon="@drawable/ic_user_activities"
+        android:title="@string/activity_user_list_fragment_label" />
+</menu>

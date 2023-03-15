@@ -1,4 +1,4 @@
-package com.sonder.boredapp.activity_list
+package com.sonder.boredapp.activity_list.browse
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -12,23 +12,25 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
-import com.sonder.boredapp.activity_list.adapter.ActivityListAdapter
+import com.sonder.boredapp.activity_list.UiState
+import com.sonder.boredapp.activity_list.browse.BrowseActivityListViewModel.Companion.CONSECUTIVE_ACTIVITIES_SIZE
+import com.sonder.boredapp.activity_list.browse.adapter.BrowseActivityListAdapter
 import com.sonder.boredapp.feature.activity_list.R
-import com.sonder.boredapp.feature.activity_list.databinding.FragmentActivityListBinding
+import com.sonder.boredapp.feature.activity_list.databinding.FragmentBrowseActivityListBinding
 import com.sonder.boredapp.model.data.ActivityResource
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 
 @AndroidEntryPoint
-class ActivityListFragment : Fragment() {
+class BrowseActivityListFragment : Fragment() {
 
-    private val viewModel: ActivityListViewModel by viewModels()
+    private val viewModel: BrowseActivityListViewModel by viewModels()
 
-    private var _binding: FragmentActivityListBinding? = null
+    private var _binding: FragmentBrowseActivityListBinding? = null
     private val binding get() = _binding!!
 
-    private var _adapter: ActivityListAdapter? = null
+    private var _adapter: BrowseActivityListAdapter? = null
     private val adapter get() = _adapter!!
 
     override fun onCreateView(
@@ -36,8 +38,8 @@ class ActivityListFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentActivityListBinding.inflate(inflater, container, false)
-        _adapter = ActivityListAdapter(mutableListOf()) {
+        _binding = FragmentBrowseActivityListBinding.inflate(inflater, container, false)
+        _adapter = BrowseActivityListAdapter(viewModel.activityList) {
             onItemAdd(it)
         }
         return binding.root
@@ -50,8 +52,6 @@ class ActivityListFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         setupRecyclerView()
         setupObservers()
-
-        viewModel.getNetworkActivities(times = INITIAL_ACTIVITIES_SIZE)
 
         super.onViewCreated(view, savedInstanceState)
     }
@@ -72,27 +72,31 @@ class ActivityListFragment : Fragment() {
     private fun setupObservers() {
         viewModel.activityState.flowWithLifecycle(
             lifecycle,
-            Lifecycle.State.STARTED
+            Lifecycle.State.CREATED
         ).onEach {
             when (it) {
                 is UiState.Success -> {
-                    adapter.items.add(it.value)
                     adapter.notifyItemInserted(adapter.items.lastIndex)
                     updateProgressBar(loading = false)
                 }
                 UiState.Error -> showToast(getString(R.string.activity_state_error))
                 UiState.Loading -> updateProgressBar(loading = true)
+                UiState.Initial -> {}
             }
         }.launchIn(viewLifecycleOwner.lifecycleScope)
 
         viewModel.addUserActivitiesState.flowWithLifecycle(
             lifecycle,
-            Lifecycle.State.STARTED
+            Lifecycle.State.CREATED
         ).onEach {
             when (it) {
-                is UiState.Success -> showToast(getString(R.string.activity_add_state_success))
+                is UiState.Success -> {
+                    showToast(getString(R.string.activity_add_state_success))
+                    viewModel.setAddActivityInitialState()
+                }
                 UiState.Error -> showToast(getString(R.string.activity_add_state_error))
-                UiState.Loading -> updateProgressBar(loading = true)
+                UiState.Loading -> {}
+                UiState.Initial -> {}
             }
         }.launchIn(viewLifecycleOwner.lifecycleScope)
     }

@@ -7,8 +7,21 @@
 
     <fragment
         android:id="@+id/activityList"
-        android:name="com.sonder.boredapp.activity_list.ActivityListFragment"
+        android:name="com.sonder.boredapp.activity_list.browse.BrowseActivityListFragment"
         android:label="@string/activity_list_fragment_label"
-        tools:layout="@layout/fragment_activity_list">
+        tools:layout="@layout/fragment_browse_activity_list">
+        <action
+            android:id="@+id/action_activityList_to_userActivitiesList"
+            app:destination="@id/userActivitiesList" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/userActivitiesList"
+        android:name="com.sonder.boredapp.activity_list.user.UserActivitiesFragment"
+        android:label="@string/activity_user_list_fragment_label"
+        tools:layout="@layout/fragment_user_activities">
+        <action
+            android:id="@+id/action_userActivitiesList_to_activityList"
+            app:destination="@id/activityList" />
     </fragment>
 </navigation>
