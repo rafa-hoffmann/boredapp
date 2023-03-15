@@ -31,13 +31,13 @@ class UserActivitiesViewModel @Inject constructor(
 
     val updateUserActivityStatus: StateFlow<UiState<Unit>> = _updateUserActivityStatus
 
-    fun getUserActivities(type: ActivityType? = null) {
+    fun getUserActivities(type: ActivityType?) {
         viewModelScope.launch {
             activityRepository.getUserActivities(type).asResult().collect { activityResult ->
                 _userActivitiesState.update {
                     when (activityResult) {
                         is Result.Success -> UiState.Success(activityResult.data)
-                        is Result.Error -> UiState.Error
+                        is Result.Error -> UiState.Error(activityResult.exception)
                         is Result.Loading -> UiState.Loading
                     }
                 }
@@ -45,17 +45,17 @@ class UserActivitiesViewModel @Inject constructor(
         }
     }
 
-    private fun updateActivityStatus(activityResource: ActivityResource) {
+    private fun updateActivityStatus(activityResource: ActivityResource, type: ActivityType?) {
         viewModelScope.launch {
             activityRepository.updateActivityStatus(activityResource).asResult()
                 .collect { activityResult ->
                     _updateUserActivityStatus.update {
                         when (activityResult) {
                             is Result.Success -> {
-                                getUserActivities(type = null)
+                                getUserActivities(type)
                                 UiState.Success(Unit)
                             }
-                            is Result.Error -> UiState.Error
+                            is Result.Error -> UiState.Error(activityResult.exception)
                             is Result.Loading -> UiState.Loading
                         }
                     }
@@ -67,16 +67,16 @@ class UserActivitiesViewModel @Inject constructor(
         _updateUserActivityStatus.value = UiState.Initial
     }
 
-    fun startActivity(activityResource: ActivityResource) {
+    fun startActivity(activityResource: ActivityResource, type: ActivityType?) {
         val newActivity = activityResource.copy(
             status = ActivityStatus.InProgress(
                 startTime = Clock.System.now()
             )
         )
-        updateActivityStatus(newActivity)
+        updateActivityStatus(newActivity, type)
     }
 
-    fun stopActivity(activityResource: ActivityResource) {
+    fun stopActivity(activityResource: ActivityResource, type: ActivityType?) {
         val startTime = (activityResource.status as ActivityStatus.InProgress).startTime
         val newActivity = activityResource.copy(
             status = ActivityStatus.Finished(
@@ -84,11 +84,11 @@ class UserActivitiesViewModel @Inject constructor(
                 finishTime = Clock.System.now()
             )
         )
-        updateActivityStatus(newActivity)
+        updateActivityStatus(newActivity, type)
     }
 
-    fun withdrawActivity(activityResource: ActivityResource) {
+    fun withdrawActivity(activityResource: ActivityResource, type: ActivityType?) {
         val newActivity = activityResource.copy(status = ActivityStatus.Withdrawal)
-        updateActivityStatus(newActivity)
+        updateActivityStatus(newActivity, type)
     }
 }

@@ -19,10 +19,10 @@ import javax.inject.Inject
 class BrowseActivityListViewModel @Inject constructor(
     private val activityRepository: ActivityRepository
 ) : ViewModel() {
-    private val _activityState: MutableStateFlow<UiState<ActivityResource>> =
+    private val _networkActivityState: MutableStateFlow<UiState<ActivityResource>> =
         MutableStateFlow(UiState.Initial)
 
-    val activityState: StateFlow<UiState<ActivityResource>> = _activityState
+    val networkActivityState: StateFlow<UiState<ActivityResource>> = _networkActivityState
 
     private val _addUserActivityState: MutableStateFlow<UiState<Unit>> =
         MutableStateFlow(UiState.Initial)
@@ -31,26 +31,44 @@ class BrowseActivityListViewModel @Inject constructor(
 
     val activityList: MutableList<ActivityResource> = mutableListOf()
 
+    private val _lastFilteredType: MutableStateFlow<UiState<ActivityType?>> =
+        MutableStateFlow(UiState.Initial)
+
+    val lastFilteredType: StateFlow<UiState<ActivityType?>> = _lastFilteredType
+
     init {
-        getNetworkActivities(times = INITIAL_ACTIVITIES_SIZE)
+        getNetworkActivities(type = null, times = INITIAL_ACTIVITIES_SIZE)
     }
 
-    fun getNetworkActivities(type: ActivityType? = null, times: Int) {
+    fun getNetworkActivities(type: ActivityType?, times: Int) {
         viewModelScope.launch {
             repeat(times) {
                 activityRepository.getActivity(type).asResult().collect { activityResult ->
-                    _activityState.update {
+                    _networkActivityState.update {
                         when (activityResult) {
                             is Result.Success -> {
                                 activityList.add(activityResult.data)
                                 UiState.Success(activityResult.data)
                             }
-                            is Result.Error -> UiState.Error
+                            is Result.Error -> UiState.Error(activityResult.exception)
                             is Result.Loading -> UiState.Loading
                         }
                     }
                 }
             }
+        }
+    }
+
+    fun updateFilter(activityType: ActivityType?) {
+        viewModelScope.launch {
+            activityList.clear()
+            activityRepository.clearPreviouslyFetchedActivities()
+
+            _lastFilteredType.update {
+                UiState.Success(activityType)
+            }
+
+            getNetworkActivities(activityType, INITIAL_ACTIVITIES_SIZE)
         }
     }
 
@@ -60,7 +78,7 @@ class BrowseActivityListViewModel @Inject constructor(
                 _addUserActivityState.update {
                     when (addActivityResult) {
                         is Result.Success -> UiState.Success(addActivityResult.data)
-                        is Result.Error -> UiState.Error
+                        is Result.Error -> UiState.Error(addActivityResult.exception)
                         is Result.Loading -> UiState.Loading
                     }
                 }
@@ -73,6 +91,8 @@ class BrowseActivityListViewModel @Inject constructor(
             _addUserActivityState.value = UiState.Initial
         }
     }
+
+    fun getLastFilteredTypeSuccess() = (_lastFilteredType.value as? UiState.Success)?.value
 
     companion object {
         private const val INITIAL_ACTIVITIES_SIZE = 15

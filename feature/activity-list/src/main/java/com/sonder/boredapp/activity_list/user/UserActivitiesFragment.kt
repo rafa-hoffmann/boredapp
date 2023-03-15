@@ -7,23 +7,27 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.sonder.boredapp.activity_list.UiState
+import com.sonder.boredapp.activity_list.filter.FilterActivitiesViewModel
+import com.sonder.boredapp.activity_list.filter.showFilterList
 import com.sonder.boredapp.activity_list.user.adapter.UserActivityAdapter
 import com.sonder.boredapp.activity_list.user.adapter.UserActivityListener
 import com.sonder.boredapp.feature.activity_list.R
 import com.sonder.boredapp.feature.activity_list.databinding.FragmentUserActivitiesBinding
 import com.sonder.boredapp.model.data.ActivityResource
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class UserActivitiesFragment : Fragment(), UserActivityListener {
+
     private val viewModel: UserActivitiesViewModel by viewModels()
+    private val filterViewModel: FilterActivitiesViewModel by activityViewModels()
 
     private var _binding: FragmentUserActivitiesBinding? = null
     private val binding get() = _binding!!
@@ -44,10 +48,17 @@ class UserActivitiesFragment : Fragment(), UserActivityListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         setupRecyclerView()
         setupObservers()
+        setupFilterButton()
 
-        viewModel.getUserActivities()
+        viewModel.getUserActivities(filterViewModel.getCurrentActivityType())
 
         super.onViewCreated(view, savedInstanceState)
+    }
+
+    private fun setupFilterButton() {
+        binding.userActivityFilter.setOnClickListener {
+            showFilterList()
+        }
     }
 
     private fun setupRecyclerView() {
@@ -55,42 +66,59 @@ class UserActivitiesFragment : Fragment(), UserActivityListener {
     }
 
     private fun setupObservers() {
-        viewModel.userActivitiesState.flowWithLifecycle(
-            lifecycle,
-            Lifecycle.State.STARTED
-        ).onEach {
-            when (it) {
-                is UiState.Success -> {
-                    adapter.submitList(it.value)
-                    updateProgressBar(loading = false)
-                }
-                UiState.Error -> {
-                    updateProgressBar(loading = false)
-                    showToast(getString(R.string.activity_state_error))
-                }
-                UiState.Loading -> updateProgressBar(loading = true)
-                UiState.Initial -> updateProgressBar(loading = false)
-            }
-        }.launchIn(viewLifecycleOwner.lifecycleScope)
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
 
-        viewModel.updateUserActivityStatus.flowWithLifecycle(
-            lifecycle,
-            Lifecycle.State.STARTED
-        ).onEach {
-            when (it) {
-                is UiState.Success -> {
-                    showToast(getString(R.string.activity_status_update_success))
-                    updateProgressBar(loading = false)
-                    viewModel.setUpdateActivityInitialState()
+                launch {
+                    viewModel.userActivitiesState.collect {
+                        when (it) {
+                            is UiState.Success -> {
+                                adapter.submitList(it.value)
+                                updateProgressBar(loading = false)
+                            }
+                            is UiState.Error -> {
+                                updateProgressBar(loading = false)
+                                showToast(
+                                    it.exception?.message
+                                        ?: getString(R.string.activity_state_error)
+                                )
+                            }
+                            UiState.Loading -> updateProgressBar(loading = true)
+                            UiState.Initial -> updateProgressBar(loading = false)
+                        }
+                    }
                 }
-                UiState.Error -> {
-                    updateProgressBar(loading = false)
-                    showToast(getString(R.string.activity_status_update_error))
+
+                launch {
+                    viewModel.updateUserActivityStatus.collect {
+                        when (it) {
+                            is UiState.Success -> {
+                                showToast(getString(R.string.activity_status_update_success))
+                                updateProgressBar(loading = false)
+                                viewModel.setUpdateActivityInitialState()
+                            }
+                            is UiState.Error -> {
+                                updateProgressBar(loading = false)
+                                showToast(
+                                    it.exception?.message
+                                        ?: getString(R.string.activity_status_update_error)
+                                )
+                            }
+                            UiState.Loading -> updateProgressBar(loading = true)
+                            UiState.Initial -> updateProgressBar(loading = false)
+                        }
+                    }
                 }
-                UiState.Loading -> updateProgressBar(loading = true)
-                UiState.Initial -> updateProgressBar(loading = false)
+
+                launch {
+                    filterViewModel.filterActivitiesState.collect {
+                        if (it is UiState.Success) {
+                            viewModel.getUserActivities(it.value)
+                        }
+                    }
+                }
             }
-        }.launchIn(viewLifecycleOwner.lifecycleScope)
+        }
     }
 
     private fun updateProgressBar(loading: Boolean) {
@@ -102,14 +130,14 @@ class UserActivitiesFragment : Fragment(), UserActivityListener {
     }
 
     override fun onPlay(activityResource: ActivityResource) {
-        viewModel.startActivity(activityResource)
+        viewModel.startActivity(activityResource, filterViewModel.getCurrentActivityType())
     }
 
     override fun onStop(activityResource: ActivityResource) {
-        viewModel.stopActivity(activityResource)
+        viewModel.stopActivity(activityResource, filterViewModel.getCurrentActivityType())
     }
 
     override fun onWithdraw(activityResource: ActivityResource) {
-        viewModel.withdrawActivity(activityResource)
+        viewModel.withdrawActivity(activityResource, filterViewModel.getCurrentActivityType())
     }
 }
