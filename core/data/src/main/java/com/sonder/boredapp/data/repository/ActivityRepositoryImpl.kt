@@ -38,4 +38,8 @@ class ActivityRepositoryImpl @Inject constructor(
     override suspend fun getUserActivities(type: ActivityType?) = flow {
         emit(activityDao.getUserActivityEntities().asExternalModel())
     }.flowOn(ioDispatcher)
+
+    override suspend fun updateActivityStatus(activityResource: ActivityResource) = flow {
+        emit(activityDao.updateActivity(activityResource.asEntity()))
+    }.flowOn(ioDispatcher)
 }

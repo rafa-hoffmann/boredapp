@@ -4,7 +4,12 @@
     <string name="activity_user_list_fragment_label">User Activities</string>
 
     <string name="activity_state_error">failed to load some activities</string>
+    <string name="activity_status_update_success">activity updated</string>
+    <string name="activity_status_update_error">failed to update activity</string>
     <string name="activity_add">ADD</string>
+    <string name="activity_play">PLAY</string>
+    <string name="activity_complete">COMPLETE</string>
+    <string name="activity_withdraw">WITHDRAW</string>
 
     <string name="activity_add_state_error">failed to add to your activities</string>
     <string name="activity_add_state_success">added to your activities</string>
@@ -22,4 +27,8 @@
     <string name="activity_type_relaxation">relaxation</string>
     <string name="activity_type_music">music</string>
     <string name="activity_type_busywork">busywork</string>
+
+    <string name="activity_status_withdrawed">withdrawed</string>
+    <string name="activity_status_in_progress">in progress, time spent: %s</string>
+    <string name="activity_status_completed">completed, time spent: %1$s</string>
 </resources>

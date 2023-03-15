@@ -16,7 +16,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class ActivityListViewModel @Inject constructor(
+class BrowseActivityListViewModel @Inject constructor(
     private val activityRepository: ActivityRepository
 ) : ViewModel() {
     private val _activityState: MutableStateFlow<UiState<ActivityResource>> =

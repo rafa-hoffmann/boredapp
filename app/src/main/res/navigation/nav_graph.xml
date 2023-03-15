@@ -7,9 +7,9 @@
 
     <fragment
         android:id="@+id/activityList"
-        android:name="com.sonder.boredapp.activity_list.browse.ActivityListFragment"
+        android:name="com.sonder.boredapp.activity_list.browse.BrowseActivityListFragment"
         android:label="@string/activity_list_fragment_label"
-        tools:layout="@layout/fragment_activity_list">
+        tools:layout="@layout/fragment_browse_activity_list">
         <action
             android:id="@+id/action_activityList_to_userActivitiesList"
             app:destination="@id/userActivitiesList" />

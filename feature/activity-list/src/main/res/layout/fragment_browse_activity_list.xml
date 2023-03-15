@@ -19,7 +19,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:itemCount="10"
-            tools:listitem="@layout/item_activity" />
+            tools:listitem="@layout/item_activity_browse" />
 
         <ProgressBar
             android:id="@+id/activity_progress_bar"

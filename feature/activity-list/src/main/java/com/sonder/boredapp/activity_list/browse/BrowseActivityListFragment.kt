@@ -13,24 +13,24 @@ import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import com.sonder.boredapp.activity_list.UiState
-import com.sonder.boredapp.activity_list.browse.ActivityListViewModel.Companion.CONSECUTIVE_ACTIVITIES_SIZE
-import com.sonder.boredapp.activity_list.browse.adapter.ActivityListAdapter
+import com.sonder.boredapp.activity_list.browse.BrowseActivityListViewModel.Companion.CONSECUTIVE_ACTIVITIES_SIZE
+import com.sonder.boredapp.activity_list.browse.adapter.BrowseActivityListAdapter
 import com.sonder.boredapp.feature.activity_list.R
-import com.sonder.boredapp.feature.activity_list.databinding.FragmentActivityListBinding
+import com.sonder.boredapp.feature.activity_list.databinding.FragmentBrowseActivityListBinding
 import com.sonder.boredapp.model.data.ActivityResource
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 
 @AndroidEntryPoint
-class ActivityListFragment : Fragment() {
+class BrowseActivityListFragment : Fragment() {
 
-    private val viewModel: ActivityListViewModel by viewModels()
+    private val viewModel: BrowseActivityListViewModel by viewModels()
 
-    private var _binding: FragmentActivityListBinding? = null
+    private var _binding: FragmentBrowseActivityListBinding? = null
     private val binding get() = _binding!!
 
-    private var _adapter: ActivityListAdapter? = null
+    private var _adapter: BrowseActivityListAdapter? = null
     private val adapter get() = _adapter!!
 
     override fun onCreateView(
@@ -38,8 +38,8 @@ class ActivityListFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentActivityListBinding.inflate(inflater, container, false)
-        _adapter = ActivityListAdapter(viewModel.activityList) {
+        _binding = FragmentBrowseActivityListBinding.inflate(inflater, container, false)
+        _adapter = BrowseActivityListAdapter(viewModel.activityList) {
             onItemAdd(it)
         }
         return binding.root
