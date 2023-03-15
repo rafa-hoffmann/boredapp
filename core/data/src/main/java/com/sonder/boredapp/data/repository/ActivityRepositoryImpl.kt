@@ -21,8 +21,14 @@ class ActivityRepositoryImpl @Inject constructor(
     private val activityDao: ActivityDao
 ) : ActivityRepository {
 
+    private val networkActivitySet: HashSet<String> = hashSetOf()
     override suspend fun getActivity(type: ActivityType?): Flow<ActivityResource> = flow {
-        emit(network.getActivity(type?.apiName).asResource())
+        val activityResource = network.getActivity(type?.apiName).asResource()
+
+        if (!networkActivitySet.contains(activityResource.key)) {
+            networkActivitySet.add(activityResource.key)
+            emit(network.getActivity(type?.apiName).asResource())
+        }
     }.flowOn(ioDispatcher)
 
     override suspend fun addUserActivity(activityResource: ActivityResource) = flow {

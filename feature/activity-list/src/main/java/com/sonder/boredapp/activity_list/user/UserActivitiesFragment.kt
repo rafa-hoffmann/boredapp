@@ -64,6 +64,7 @@ class UserActivitiesFragment : Fragment() {
                 }
                 UiState.Error -> showToast(getString(R.string.activity_state_error))
                 UiState.Loading -> updateProgressBar(loading = true)
+                UiState.Initial -> {}
             }
         }.launchIn(viewLifecycleOwner.lifecycleScope)
     }

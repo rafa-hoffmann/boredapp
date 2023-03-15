@@ -14,7 +14,6 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import com.sonder.boredapp.activity_list.UiState
 import com.sonder.boredapp.activity_list.browse.ActivityListViewModel.Companion.CONSECUTIVE_ACTIVITIES_SIZE
-import com.sonder.boredapp.activity_list.browse.ActivityListViewModel.Companion.INITIAL_ACTIVITIES_SIZE
 import com.sonder.boredapp.activity_list.browse.adapter.ActivityListAdapter
 import com.sonder.boredapp.feature.activity_list.R
 import com.sonder.boredapp.feature.activity_list.databinding.FragmentActivityListBinding
@@ -40,7 +39,7 @@ class ActivityListFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentActivityListBinding.inflate(inflater, container, false)
-        _adapter = ActivityListAdapter(mutableListOf()) {
+        _adapter = ActivityListAdapter(viewModel.activityList) {
             onItemAdd(it)
         }
         return binding.root
@@ -53,8 +52,6 @@ class ActivityListFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         setupRecyclerView()
         setupObservers()
-
-        viewModel.getNetworkActivities(times = INITIAL_ACTIVITIES_SIZE)
 
         super.onViewCreated(view, savedInstanceState)
     }
@@ -75,27 +72,31 @@ class ActivityListFragment : Fragment() {
     private fun setupObservers() {
         viewModel.activityState.flowWithLifecycle(
             lifecycle,
-            Lifecycle.State.STARTED
+            Lifecycle.State.CREATED
         ).onEach {
             when (it) {
                 is UiState.Success -> {
-                    adapter.items.add(it.value)
                     adapter.notifyItemInserted(adapter.items.lastIndex)
                     updateProgressBar(loading = false)
                 }
                 UiState.Error -> showToast(getString(R.string.activity_state_error))
                 UiState.Loading -> updateProgressBar(loading = true)
+                UiState.Initial -> {}
             }
         }.launchIn(viewLifecycleOwner.lifecycleScope)
 
         viewModel.addUserActivitiesState.flowWithLifecycle(
             lifecycle,
-            Lifecycle.State.STARTED
+            Lifecycle.State.CREATED
         ).onEach {
             when (it) {
-                is UiState.Success -> showToast(getString(R.string.activity_add_state_success))
+                is UiState.Success -> {
+                    showToast(getString(R.string.activity_add_state_success))
+                    viewModel.setAddActivityInitialState()
+                }
                 UiState.Error -> showToast(getString(R.string.activity_add_state_error))
-                UiState.Loading -> updateProgressBar(loading = true)
+                UiState.Loading -> {}
+                UiState.Initial -> {}
             }
         }.launchIn(viewLifecycleOwner.lifecycleScope)
     }

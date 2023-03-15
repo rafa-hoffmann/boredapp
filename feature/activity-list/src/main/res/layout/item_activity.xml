@@ -18,6 +18,7 @@
             style="@style/TextAppearance.AppCompat.Title"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginEnd="4dp"
             android:ellipsize="end"
             app:layout_constraintBottom_toTopOf="@id/activity_type"
             app:layout_constraintEnd_toStartOf="@id/activity_participants"
