@@ -5,6 +5,7 @@ import com.sonder.boredapp.common.network.Dispatcher
 import com.sonder.boredapp.data.model.asEntity
 import com.sonder.boredapp.data.model.asResource
 import com.sonder.boredapp.database.dao.ActivityDao
+import com.sonder.boredapp.database.model.asExternalModel
 import com.sonder.boredapp.model.data.ActivityResource
 import com.sonder.boredapp.model.data.ActivityType
 import com.sonder.boredapp.network.di.retrofit.RetrofitBoredNetwork
@@ -26,5 +27,9 @@ class ActivityRepositoryImpl @Inject constructor(
 
     override suspend fun addUserActivity(activityResource: ActivityResource) = flow {
         emit(activityDao.upsertActivity(activityResource.asEntity()))
+    }.flowOn(ioDispatcher)
+
+    override suspend fun getUserActivities(type: ActivityType?) = flow {
+        emit(activityDao.getUserActivityEntities().asExternalModel())
     }.flowOn(ioDispatcher)
 }

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="activity_list_fragment_label">Activities</string>
+    <string name="activity_list_fragment_label">Browse Activities</string>
+    <string name="activity_user_list_fragment_label">User Activities</string>
 
     <string name="activity_state_error">failed to load some activities</string>
     <string name="activity_add">ADD</string>

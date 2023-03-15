@@ -30,6 +30,8 @@ data class ActivityEntity(
     }
 }
 
+fun List<ActivityEntity>.asExternalModel() = map(ActivityEntity::asExternalModel)
+
 fun ActivityEntity.asExternalModel() = ActivityResource(
     activity = activity,
     accessibility = accessibility,

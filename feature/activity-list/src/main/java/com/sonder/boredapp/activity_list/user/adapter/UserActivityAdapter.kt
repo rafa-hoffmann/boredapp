@@ -1,18 +1,19 @@
-package com.sonder.boredapp.activity_list.adapter
+package com.sonder.boredapp.activity_list.user.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.sonder.boredapp.activity_list.getDisplayText
 import com.sonder.boredapp.feature.activity_list.R
 import com.sonder.boredapp.feature.activity_list.databinding.ItemActivityBinding
 import com.sonder.boredapp.model.data.ActivityResource
 
-class ActivityListAdapter(val items: MutableList<ActivityResource>, private val onItemAdd: (ActivityResource) -> (Unit)) :
-    RecyclerView.Adapter<ActivityListAdapter.ActivityViewHolder>() {
-    inner class ActivityViewHolder(private val binding: ItemActivityBinding) :
+class UserActivityAdapter() :
+    ListAdapter<ActivityResource, UserActivityAdapter.UserActivityViewHolder>(UserActivityAdapter) {
+
+    inner class UserActivityViewHolder(private val binding: ItemActivityBinding) :
         ViewHolder(binding.root) {
 
         fun bind(activity: ActivityResource) {
@@ -25,28 +26,22 @@ class ActivityListAdapter(val items: MutableList<ActivityResource>, private val 
                     root.context.getString(R.string.activity_accessibility, activity.accessibility)
                 activityParticipants.text =
                     root.context.getString(R.string.activity_participants, activity.participants)
-
-                activityAdd.setOnClickListener {
-                    onItemAdd(activity)
-                }
             }
         }
     }
 
-    override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): ActivityViewHolder {
+    override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): UserActivityViewHolder {
         val itemBinding =
             ItemActivityBinding.inflate(
                 LayoutInflater.from(viewGroup.context),
                 viewGroup,
                 false
             )
-        return ActivityViewHolder(itemBinding)
+        return UserActivityViewHolder(itemBinding)
     }
 
-    override fun getItemCount(): Int = items.size
-
-    override fun onBindViewHolder(viewHolder: ActivityViewHolder, position: Int) {
-        viewHolder.bind(items[position])
+    override fun onBindViewHolder(viewHolder: UserActivityViewHolder, position: Int) {
+        viewHolder.bind(getItem(position))
     }
 
     private companion object : DiffUtil.ItemCallback<ActivityResource>() {

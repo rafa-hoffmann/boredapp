@@ -1,7 +1,8 @@
-package com.sonder.boredapp.activity_list
+package com.sonder.boredapp.activity_list.browse
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.sonder.boredapp.activity_list.UiState
 import com.sonder.boredapp.common.result.Result
 import com.sonder.boredapp.common.result.asResult
 import com.sonder.boredapp.data.repository.ActivityRepository
@@ -13,9 +14,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-
-const val INITIAL_ACTIVITIES_SIZE = 15
-const val CONSECUTIVE_ACTIVITIES_SIZE = 5
 
 @HiltViewModel
 class ActivityListViewModel @Inject constructor(
@@ -59,5 +57,10 @@ class ActivityListViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    companion object {
+        const val INITIAL_ACTIVITIES_SIZE = 15
+        const val CONSECUTIVE_ACTIVITIES_SIZE = 5
     }
 }
