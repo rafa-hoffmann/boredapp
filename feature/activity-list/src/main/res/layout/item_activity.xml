@@ -3,9 +3,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    tools:theme="@style/Theme.Material3.DayNight">
 
-    <TextView
+    <com.google.android.material.textview.MaterialTextView
         android:id="@+id/activity_name"
         style="@style/TextAppearance.AppCompat.Title"
         android:layout_width="0dp"
@@ -19,7 +20,7 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:text="Learn Express.js" />
 
-    <TextView
+    <com.google.android.material.textview.MaterialTextView
         android:id="@+id/activity_type"
         style="@style/TextAppearance.AppCompat.Body1"
         android:layout_width="wrap_content"
@@ -29,7 +30,7 @@
         app:layout_constraintTop_toBottomOf="@id/activity_name"
         tools:text="relaxation" />
 
-    <TextView
+    <com.google.android.material.textview.MaterialTextView
         android:id="@+id/activity_participants"
         style="@style/TextAppearance.AppCompat.Body1"
         android:layout_width="wrap_content"
@@ -41,7 +42,7 @@
         app:layout_constraintVertical_chainStyle="packed"
         tools:text="participants: 1" />
 
-    <TextView
+    <com.google.android.material.textview.MaterialTextView
         android:id="@+id/activity_price"
         style="@style/TextAppearance.AppCompat.Body1"
         android:layout_width="wrap_content"
@@ -53,7 +54,7 @@
         app:layout_constraintVertical_chainStyle="packed"
         tools:text="price: 0.8" />
 
-    <TextView
+    <com.google.android.material.textview.MaterialTextView
         android:id="@+id/activity_accessibility"
         style="@style/TextAppearance.AppCompat.Body1"
         android:layout_width="wrap_content"
